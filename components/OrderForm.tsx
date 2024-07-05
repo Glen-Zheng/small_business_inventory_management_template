@@ -116,19 +116,19 @@ const OrderForm = ({ orderTotal }: any) => {
       </div>
 
       {confirmOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <div className="fixed  inset-0 bg-rose-50 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white border-2 border-black p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h3 className="text-lg font-bold mb-4">Confirm and place order?</h3>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={handleSubmit}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300"
+                className="bg-fuchsia-700 text-white px-4 py-2 rounded hover:bg-turqoise transition duration-200"
               >
                 Yes
               </button>
               <button
                 onClick={() => setConfirmOrder(false)}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+                className="bg-sky-900 text-white px-4 py-2 rounded hover:bg-turqoise transition duration-200"
               >
                 No
               </button>

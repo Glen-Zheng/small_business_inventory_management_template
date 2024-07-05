@@ -17,8 +17,15 @@ const Sidebar = ({ setActiveView }: any) => {
             onClick={() => setActiveView("inventory")}
             className="w-full text-left py-3 px-6 text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
           >
-            <i className="fas fa-edit mr-2"></i>
-            Edit Inventory/Stores
+            <i className="fas fa-boxes-stacked mr-2"></i>
+            Edit Inventory
+          </button>
+          <button
+            onClick={() => setActiveView("stores")}
+            className="w-full text-left py-3 px-6 text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
+          >
+            <i className="fas fa-store mr-2"></i>
+            Edit Stores
           </button>
           <button
             onClick={() => setActiveView("finances")}

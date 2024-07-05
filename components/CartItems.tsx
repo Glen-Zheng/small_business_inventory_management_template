@@ -30,7 +30,7 @@ const CartItems = () => {
   }, [cart]);
 
   return (
-    <div className="w-full px-2 sm:px-3 lg:px-4">
+    <div className="w-full px-2 sm:px-3 lg:px-4 mb-10">
       <button
         className={`mb-4 flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-300 ${
           isHovered ? "underline" : ""

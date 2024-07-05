@@ -498,7 +498,6 @@ ORDER BY so.id,
 --     LEFT JOIN products ON orders.product_id = products.product_id;
 --@block
 SELECT inventory_items.id,
-    inventory_items.category_id,
     ingredient_categories.category_name,
     inventory_items.item_name,
     inventory_items.item_price,
@@ -506,4 +505,5 @@ SELECT inventory_items.id,
     inventory_items.item_size,
     inventory_items.item_units
 FROM inventory_items
-    INNER JOIN ingredient_categories ON inventory_items.category_id = ingredient_categories.id;
+    INNER JOIN ingredient_categories ON inventory_items.category_id = ingredient_categories.id
+ORDER BY inventory_items.category_id;

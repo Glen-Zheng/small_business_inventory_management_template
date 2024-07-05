@@ -32,7 +32,7 @@ export const config = {
     "/cart",
     "/shop",
     "/api/shop/:path",
-    "/api/orders",
+    "/api/orders/:path",
     "/admin",
     "/api/admin/inventory/:path",
   ], // Add your protected routes

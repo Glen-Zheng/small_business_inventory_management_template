@@ -114,6 +114,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
       });
 
       if (response.ok) {
+        toggleEditStock(id);
         const index = adminInventoryItems.findIndex(
           (value: any) => value.id === id
         );
@@ -131,83 +132,110 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
     }
   };
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Category
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Price
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Stock
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Size
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Units
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Remove Item
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {adminInventoryItems.map((item: any) => (
-            <tr key={item.id}>
-              <td className="px-6 py-4 whitespace-nowrap">{item.item_name}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {item.category_name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                ${item.item_price}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap border">
-                <span>{item.item_stock} </span>
-                {editItems.get(item.id) ? (
-                  <form
-                    onSubmit={(e: any) =>
-                      editStock(e, item.id, e.target.elements.stockAmount.value)
-                    }
-                  >
-                    <input
-                      name="stockAmount"
-                      placeholder={item.item_stock}
-                      type="number"
-                    />
-                    <button type="submit">Save</button>
-                  </form>
-                ) : (
-                  <span
-                    onClick={() => toggleEditStock(item.id)}
-                    className="cursor-pointer hover:turqoise"
-                  >
-                    Edit
-                  </span>
-                )}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">{item.item_size}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{item.item_units}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="text-amber-800 hover:underline hover:font-bold"
-                >
-                  Delete
-                </button>
-              </td>
+    <div className="container mx-auto px-4 py-8">
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-teal-600">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                Category
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                Price
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                Stock
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                Size
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                Units
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                Remove Item
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div>
-        <p>create item</p>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {adminInventoryItems.map((item: any) => (
+              <tr
+                key={item.id}
+                className="hover:bg-gray-50 transition-colors duration-200"
+              >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.item_name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.category_name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  ${item.item_price}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="mr-2">{item.item_stock}</span>
+                  {editItems.get(item.id) ? (
+                    <form
+                      onSubmit={(e: any) =>
+                        editStock(
+                          e,
+                          item.id,
+                          e.target.elements.stockAmount.value
+                        )
+                      }
+                      className="inline-flex items-center"
+                    >
+                      <input
+                        name="stockAmount"
+                        type="number"
+                        className="w-16 border border-gray-300 rounded px-2 py-1 mr-2"
+                      />
+                      <button
+                        type="submit"
+                        className="text-teal-600 hover:text-teal-800 mr-2"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => toggleEditStock(item.id)}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => toggleEditStock(item.id)}
+                      className="text-teal-600 hover:text-teal-800 hover:underline"
+                    >
+                      Edit
+                    </button>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.item_size}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.item_units}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => deleteItem(item.id)}
+                    className="text-orange-600 hover:text-orange-800 hover:underline"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-8 bg-white shadow-md rounded-lg p-6">
+        <h2 className="text-2xl font-bold text-teal-600 mb-4">Create Item</h2>
         <form
           onSubmit={() =>
             createItem(
@@ -219,46 +247,68 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
               itemUnits
             )
           }
-          className="flex"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
-          <label>Name</label>
-          <input
-            onChange={(e) => setItemName(e.target.value)}
-            maxLength={255}
-            value={itemName}
-            type="text"
-          />
-          <label>Price</label>
-          <input
-            onChange={(e) => setItemPrice(Number(e.target.value))}
-            value={itemPrice}
-            type="number"
-          />
-
-          <label>Stock</label>
-          <input
-            onChange={(e) => setItemStock(Number(e.target.value))}
-            value={itemStock}
-            type="number"
-          />
-
-          <label>Size</label>
-          <input
-            onChange={(e) => setItemSize(e.target.value)}
-            value={itemSize}
-            type="text"
-          />
-
-          <label>Units</label>
-          <input
-            onChange={(e) => setItemUnits(e.target.value)}
-            value={itemUnits}
-            type="text"
-          />
-
-          <label>Category</label>
-          <input value={itemCat} type="number" />
-          <button type="submit">Submit</button>
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Name</label>
+            <input
+              onChange={(e) => setItemName(e.target.value)}
+              maxLength={255}
+              value={itemName}
+              type="text"
+              className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Price</label>
+            <input
+              onChange={(e) => setItemPrice(Number(e.target.value))}
+              value={itemPrice}
+              type="number"
+              className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Stock</label>
+            <input
+              onChange={(e) => setItemStock(Number(e.target.value))}
+              value={itemStock}
+              type="number"
+              className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Size</label>
+            <input
+              onChange={(e) => setItemSize(e.target.value)}
+              value={itemSize}
+              type="text"
+              className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Units</label>
+            <input
+              onChange={(e) => setItemUnits(e.target.value)}
+              value={itemUnits}
+              type="text"
+              className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Category</label>
+            <input
+              value={itemCat}
+              type="number"
+              className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            />
+          </div>
+          <button
+            type="submit"
+            className="md:col-span-2 bg-teal-600 text-white font-bold py-2 px-4 rounded hover:bg-teal-700 transition-colors duration-200"
+          >
+            Submit
+          </button>
         </form>
       </div>
     </div>

@@ -3,8 +3,10 @@ import React from "react";
 import { useEffect, useState } from "react";
 
 const Orders = () => {
+  //may restrict orders in the future to only be the orders that i care about, which is why grosstotal should be a useState.
   const [orders, setOrders] = useState<any[]>([]);
   const [orderData, setOrderData] = useState<Map<number, boolean>>(new Map());
+  const [grossTotal, setGrossTotal] = useState<number>(0);
   useEffect(() => {
     async function getOrders() {
       try {
@@ -24,11 +26,15 @@ const Orders = () => {
   useEffect(() => {
     if (orders.length !== 0) {
       const initialOrderData = new Map<number, boolean>();
-
+      setGrossTotal(0);
+      let total: number = 0;
       for (const order of orders) {
         initialOrderData.set(order.order_id, false);
+        console.log(typeof order.total_amount);
+        if (order.total_amount !== null) total += Number(order.total_amount);
       }
       setOrderData(initialOrderData);
+      setGrossTotal(total);
     }
   }, [orders]);
   //shoukld remove it i think
@@ -48,7 +54,7 @@ const Orders = () => {
       if (response.ok) {
         let ordersObject = orders;
         ordersObject[
-          ordersObject.findIndex((element: any) => (element.order_id = orderId))
+          ordersObject.findIndex((element: any) => element.order_id === orderId)
         ].order_status = "Completed";
         setOrders(ordersObject);
       }
@@ -71,7 +77,7 @@ const Orders = () => {
         <div className="bg-gray-100 p-4 font-semibold">
           <div className="grid grid-cols-5 gap-4">
             <span>Order #</span>
-            <span>Date</span>
+            <span>Date (UTC)</span>
             <span>Store</span>
             <span>Status</span>
             <span></span>
@@ -98,7 +104,7 @@ const Orders = () => {
                   <span className="flex items-center">
                     {order.order_status === "Pending" ? (
                       <i className="fa-regular fa-clock text-yellow-500 mr-2"></i>
-                    ) : order.order_status === "Complete" ? (
+                    ) : order.order_status === "Completed" ? (
                       <i className="fa-solid fa-check text-green-500 mr-2"></i>
                     ) : null}
                     {order.order_status}
@@ -148,6 +154,7 @@ const Orders = () => {
               </div>
             ))}
         </div>
+        <p>Gross Total: ${grossTotal}</p>
       </div>
     </div>
   );

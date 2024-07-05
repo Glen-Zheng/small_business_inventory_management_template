@@ -3,7 +3,8 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Orders from "@/components/AdminComponents/Orders";
 import Sidebar from "@/components/AdminComponents/Sidebar";
-import StockShop from "@/components/AdminComponents/StockShopEdit";
+import InventoryStock from "@/components/AdminComponents/InventoryStock";
+import Stores from "@/components/AdminComponents/Stores";
 const AdminDashboard = () => {
   const [activeView, setActiveView] = useState("orders");
 
@@ -12,7 +13,9 @@ const AdminDashboard = () => {
       case "orders":
         return <Orders />;
       case "inventory":
-        return <StockShop />;
+        return <InventoryStock />;
+      case "stores":
+        return <Stores />;
       case "finances":
         return <div>Finances Component</div>;
       default:

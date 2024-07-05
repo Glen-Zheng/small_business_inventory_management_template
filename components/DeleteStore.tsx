@@ -36,44 +36,46 @@ const DeleteStore = ({ adminStores, setAdminStores }: any) => {
   };
 
   return (
-    <div>
-      <p className="font-semibold">Delete stores</p>
-      <div>
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <p className="text-xl font-semibold mb-4">Delete stores</p>
+      <div className="space-y-2">
         {adminStores.map((store: any) => (
           <div
             key={store.id}
-            className="rounded border border-black flex justify-between"
+            className="flex justify-between items-center p-3 bg-gray-50 rounded"
           >
             <p>{store.store_location}</p>
-            <p
-              className="underline hover:text-turqoise cursor-pointer"
+            <button
+              className="text-red-600 hover:text-red-800 font-medium"
               onClick={() => {
                 setConfirmDelete(true);
                 setAttemptedDelete(store.store_location);
               }}
             >
               DELETE
-            </p>
+            </button>
           </div>
         ))}
         {confirmDelete && attemptedDelete && (
-          <div className="border border-orange-500 rounded bg-slate-200">
-            Confirm delete {attemptedDelete}?{" "}
-            <span
-              onClick={() => handleDeleteStore(attemptedDelete)}
-              className="cursor-pointer text-orange-500 hover:text-turqoise"
-            >
-              Yes
-            </span>{" "}
-            <span
-              onClick={() => {
-                setConfirmDelete(false);
-                setAttemptedDelete("");
-              }}
-              className="cursor-pointer text-orange-500 hover:text-turqoise"
-            >
-              No
-            </span>
+          <div className="mt-4 p-4 border border-orange-500 rounded bg-orange-50">
+            <p className="mb-2">Confirm delete {attemptedDelete}?</p>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => handleDeleteStore(attemptedDelete)}
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => {
+                  setConfirmDelete(false);
+                  setAttemptedDelete("");
+                }}
+                className="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400"
+              >
+                No
+              </button>
+            </div>
           </div>
         )}
       </div>

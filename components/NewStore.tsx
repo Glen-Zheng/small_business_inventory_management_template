@@ -2,13 +2,11 @@
 import { useState } from "react";
 import React from "react";
 
-const newStore = () => {
+const NewStore = () => {
   const [storeLocation, setStoreLocation] = useState<string>("");
   const [storePassword, setStorePassword] = useState<any>("");
-  const [adminPass, setAdminPass] = useState<any>("");
 
   const [seePass, setSeePass] = useState<string>("password");
-  const [seeAdminPass, setSeeAdminPass] = useState<string>("password");
   const [adminPassError, setAdminPassError] = useState<boolean>(false);
 
   // const authenticateAdmin = async () => {
@@ -71,69 +69,129 @@ const newStore = () => {
     }
   };
   return (
-    <div className="">
-      <div className="bg-white p-8 rounded shadow-lg w-full max-w-md ">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
+      <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-600">
         <form
-          className=" z-index-20 flex flex-col justify-center items-center space-y-4"
+          className="z-20 space-y-6"
           onSubmit={handleSubmit}
           // onKeyDown={(e) => {
           //   if (e.key === "Enter") handleSubmit;
           // }}
         >
-          <h1 className="font-semibold">Add New Store</h1>
-          <label className="">Store Location </label>
-          <input
-            type="text"
-            placeholder="Store Location"
-            value={storeLocation}
-            className="w-full border-2 border-gray-300 rounded px-3 py-2 "
-            maxLength={255}
-            onChange={(e) => setStoreLocation(e.target.value)}
-            required
-          ></input>
-          <label>Store Password </label>
-          <div className=" w-full flex flex-row justify-center items-center border-2 border-gray-300 rounded px-3 py-2 cursor-default">
-            <input
-              type={seePass}
-              placeholder="Password"
-              value={storePassword}
-              className=" w-full "
-              onChange={(e) => setStorePassword(e.target.value)}
-              maxLength={255}
-              required
-            ></input>
-            <span
-              onMouseDown={() => setSeePass("text")}
-              onMouseUp={() => setSeePass("password")}
-            >
-              see
-            </span>
+          <h1 className="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500 mb-6">
+            New Store Setup
+          </h1>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">
+              Store Location
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Enter store location"
+                value={storeLocation}
+                className="w-full bg-gray-800 border border-gray-600 text-white rounded-md px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-150 ease-in-out pl-10"
+                maxLength={255}
+                onChange={(e) => setStoreLocation(e.target.value)}
+                required
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
+            </div>
           </div>
-          {/* <label>Admin Password </label>
-          <div className="w-full flex flex-row justify-center items-center border-2 border-gray-300 rounded px-3 py-2 cursor-default">
-            <input
-              value={adminPass}
-              className="w-full "
-              type={seeAdminPass}
-              placeholder="Enter Admin Password to create new store"
-              required
-              onChange={(e) => setAdminPass(e.target.value)}
-            ></input>
-            <span
-              onMouseDown={() => setSeeAdminPass("text")}
-              onMouseUp={() => setSeeAdminPass("password")}
-            >
-              see
-            </span>
-          </div> */}
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">
+              Store Password
+            </label>
+            <div className="relative">
+              <input
+                type={seePass}
+                placeholder="Enter password"
+                value={storePassword}
+                className="w-full bg-gray-800 border border-gray-600 text-white rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-150 ease-in-out pl-10"
+                onChange={(e) => setStorePassword(e.target.value)}
+                maxLength={255}
+                required
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
+              <span
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-teal-400 cursor-pointer hover:text-teal-300 transition duration-150 ease-in-out"
+                onClick={
+                  seePass === "password"
+                    ? () => setSeePass("text")
+                    : () => setSeePass("password")
+                }
+              >
+                See
+              </span>
+            </div>
+          </div>
+
+          {/* <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-300">Admin Password</label>
+        <div className="relative">
+          <input
+            value={adminPass}
+            className="w-full bg-gray-800 border border-gray-600 text-white rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-150 ease-in-out pl-10"
+            type={seeAdminPass}
+            placeholder="Enter Admin Password to create new store"
+            required
+            onChange={(e) => setAdminPass(e.target.value)}
+          />
+          <span className="absolute left-3 top-2.5 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
+            </svg>
+          </span>
+          <span
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-teal-400 cursor-pointer hover:text-teal-300 transition duration-150 ease-in-out"
+            onMouseDown={() => setSeeAdminPass("text")}
+            onMouseUp={() => setSeeAdminPass("password")}
+          >
+            See
+          </span>
+        </div>
+      </div> */}
+
           <button
             type="submit"
-            className="w-1/4 border-black border-2 hover:bg-sky-300 duration-500 cursor-pointer"
+            className="w-full bg-gradient-to-r from-teal-500 to-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:from-teal-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-150 ease-in-out"
           >
-            Submit
+            Create New Store
           </button>
+
           {adminPassError && (
-            <p>Admin password wrong, retype or contact admin</p>
+            <p className="text-red-400 text-sm text-center">
+              Admin password incorrect. Please try again or contact system
+              administrator.
+            </p>
           )}
         </form>
       </div>
@@ -141,4 +199,4 @@ const newStore = () => {
   );
 };
 
-export default newStore;
+export default NewStore;

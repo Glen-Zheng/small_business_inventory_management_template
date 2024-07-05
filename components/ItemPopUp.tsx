@@ -87,10 +87,16 @@ const ItemPopUp = ({
             <span className="font-semibold">Units/Case:</span>
             <span>{item_units}</span>
           </p>
-          {itemSelected && itemSelected.quantity > 0 && (
+          {itemSelected && itemSelected.quantity > 0 ? (
             <p className="flex justify-between font-bold">
-              <span>Total Price:</span>
-              <span>${(itemSelected.quantity * item_price).toFixed(2)}</span>
+              <span className="text-turqoise">Total Price:</span>
+              <span className="underline decoration-amber-500">
+                ${(itemSelected.quantity * item_price).toFixed(2)}
+              </span>
+            </p>
+          ) : (
+            <p>
+              <br />
             </p>
           )}
         </div>
