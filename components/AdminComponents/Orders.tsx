@@ -24,7 +24,7 @@ const Orders = () => {
   }, []);
 
   useEffect(() => {
-    if (orders.length !== 0) {
+    if (orders[0] !== null) {
       const initialOrderData = new Map<number, boolean>();
       setGrossTotal(0);
       let total: number = 0;
@@ -84,75 +84,78 @@ const Orders = () => {
           </div>
         </div>
         <div className="overflow-y-auto flex-grow">
-          {orders
-            .slice()
-            .reverse()
-            .map((order: any) => (
-              <div
-                key={order.order_id}
-                className="border-b border-gray-200 last:border-b-0"
-              >
+          {orders[0] !== null &&
+            orders
+              .slice()
+              .reverse()
+              .map((order: any) => (
                 <div
-                  onClick={() => toggleOrderDetails(order.order_id)}
-                  className="grid grid-cols-5 gap-4 items-center p-4 hover:bg-gray-100 cursor-pointer transition duration-150 ease-in-out"
+                  key={order.order_id}
+                  className="border-b border-gray-200 last:border-b-0"
                 >
-                  <span className="font-medium">#{order.order_id}</span>
-                  <span className="text-gray-600">
-                    {order.order_date.substring(0, 10)}
-                  </span>
-                  <span className="text-gray-600">{order.store_location}</span>
-                  <span className="flex items-center">
-                    {order.order_status === "Pending" ? (
-                      <i className="fa-regular fa-clock text-yellow-500 mr-2"></i>
-                    ) : order.order_status === "Completed" ? (
-                      <i className="fa-solid fa-check text-green-500 mr-2"></i>
-                    ) : null}
-                    {order.order_status}
-                  </span>
-                  <i
-                    className={`fas fa-chevron-${
-                      orderData.get(order.order_id) ? "up" : "down"
-                    } text-gray-400 justify-self-end`}
-                  ></i>
-                </div>
-                {orderData.get(order.order_id) && (
-                  <div className="bg-gray-50 p-4">
-                    {order.items.length ? (
-                      <div className="space-y-2">
-                        {order.items.map((item: any) => (
-                          <div
-                            key={item.item_name}
-                            className="flex justify-between items-center"
-                          >
-                            <span>
-                              {item.item_name} - {item.item_quantity}x
-                            </span>
-                            <span className="text-gray-600">
-                              ${item.item_cost}
-                            </span>
-                          </div>
-                        ))}
-                        <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between items-center">
-                          {order.order_status === "Pending" && (
-                            <p
-                              onClick={() => orderComplete(order.order_id)}
-                              className="font-left underline hover:text-turqoise cursor-pointer"
-                            >
-                              Mark as Complete (Irreversible)
-                            </p>
-                          )}
-                          <p className="font-bold text-right grow">
-                            Total: ${order.total_amount}
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-center text-gray-500">Empty Order</p>
-                    )}
+                  <div
+                    onClick={() => toggleOrderDetails(order.order_id)}
+                    className="grid grid-cols-5 gap-4 items-center p-4 hover:bg-gray-100 cursor-pointer transition duration-150 ease-in-out"
+                  >
+                    <span className="font-medium">#{order.order_id}</span>
+                    <span className="text-gray-600">
+                      {order.order_date.substring(0, 10)}
+                    </span>
+                    <span className="text-gray-600">
+                      {order.store_location}
+                    </span>
+                    <span className="flex items-center">
+                      {order.order_status === "Pending" ? (
+                        <i className="fa-regular fa-clock text-yellow-500 mr-2"></i>
+                      ) : order.order_status === "Completed" ? (
+                        <i className="fa-solid fa-check text-green-500 mr-2"></i>
+                      ) : null}
+                      {order.order_status}
+                    </span>
+                    <i
+                      className={`fas fa-chevron-${
+                        orderData.get(order.order_id) ? "up" : "down"
+                      } text-gray-400 justify-self-end`}
+                    ></i>
                   </div>
-                )}
-              </div>
-            ))}
+                  {orderData.get(order.order_id) && (
+                    <div className="bg-gray-50 p-4">
+                      {order.items.length ? (
+                        <div className="space-y-2">
+                          {order.items.map((item: any) => (
+                            <div
+                              key={item.item_name}
+                              className="flex justify-between items-center"
+                            >
+                              <span>
+                                {item.item_name} - {item.item_quantity}x
+                              </span>
+                              <span className="text-gray-600">
+                                ${item.item_cost}
+                              </span>
+                            </div>
+                          ))}
+                          <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between items-center">
+                            {order.order_status === "Pending" && (
+                              <p
+                                onClick={() => orderComplete(order.order_id)}
+                                className="font-left underline hover:text-turqoise cursor-pointer"
+                              >
+                                Mark as Complete (Irreversible)
+                              </p>
+                            )}
+                            <p className="font-bold text-right grow">
+                              Total: ${order.total_amount}
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-center text-gray-500">Empty Order</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
         </div>
         <p>Gross Total: ${grossTotal}</p>
       </div>

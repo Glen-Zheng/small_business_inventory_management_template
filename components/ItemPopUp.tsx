@@ -132,7 +132,8 @@ const ItemPopUp = ({
             </div>
             <button
               onClick={
-                itemSelectedCart && itemSelectedCart.quantity >= item_stock
+                !item_stock ||
+                (itemSelectedCart && itemSelectedCart.quantity >= item_stock)
                   ? () => {
                       setStockLimitError(true);
                     }
@@ -146,9 +147,10 @@ const ItemPopUp = ({
                         item_units
                       )
               }
-              className={`px-4 py-2
+              className={`px-4 py-2 
                 ${
-                  itemSelectedCart && itemSelectedCart.quantity >= item_stock
+                  !item_stock ||
+                  (itemSelectedCart && itemSelectedCart.quantity >= item_stock)
                     ? "bg-gray-500 text-gray-800 font-medium cursor-auto"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium transition duration-150"
                 }`}

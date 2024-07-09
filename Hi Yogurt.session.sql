@@ -507,3 +507,18 @@ SELECT inventory_items.id,
 FROM inventory_items
     INNER JOIN ingredient_categories ON inventory_items.category_id = ingredient_categories.id
 ORDER BY inventory_items.category_id;
+--@block
+DELETE FROM inventory_items
+WHERE id = 154;
+--@block
+SELECT *
+from store_orders;
+--@block
+select *
+from inventory_items;
+--@block
+UPDATE inventory_items
+SET column1 = value1,
+    column2 = value2,
+...
+WHERE condition;
