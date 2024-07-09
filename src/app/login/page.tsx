@@ -72,7 +72,7 @@ const Login = () => {
           {sl} Location
         </h1>
         <p className="mb-6 text-center text-gray-600">
-          Please provide your store's password.
+          Please provide your store&apos;s password.
         </p>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
