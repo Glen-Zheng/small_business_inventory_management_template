@@ -20,7 +20,7 @@ export const GET = async (req, { params }) => {
         return new Response("Category not found", { status: 404 });
       }
     }
-    console.log("API response data:", rows); // Add this line
+    // console.log("API response data:", rows); // Add this line
     return new Response(JSON.stringify(rows), { status: 200 });
   } catch (error) {
     return new Response("Failed to fetch items", { status: 500 });

@@ -299,6 +299,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
             <label className="text-gray-700 font-medium mb-1">Category</label>
             <input
               value={itemCat}
+              onChange={(e) => setItemCat(Number(e.target.value))}
               type="number"
               className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />

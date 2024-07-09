@@ -41,7 +41,7 @@ const cartSlice = createSlice({
         1
       );
     },
-    emptyCart: (state, action) => {
+    emptyCart: (state) => {
       state.cart = [];
     },
     increaseItemQuantity: (state, action) => {
@@ -54,10 +54,12 @@ const cartSlice = createSlice({
       const i = state.cart.findIndex(
         (element) => element.id === action.payload
       );
-      if (state.cart[i].quantity == 1) {
-        state.cart.splice(i, 1);
-      } else {
-        state.cart[i].quantity--;
+      if (i !== -1) {
+        if (state.cart[i].quantity == 1) {
+          state.cart.splice(i, 1);
+        } else {
+          state.cart[i].quantity--;
+        }
       }
     },
   },

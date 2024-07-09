@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { addToCart } from "@/store_redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "@/store_redux/slices/cartSlice";
+
+const TempErrorMessage = ({ setStockLimitError }: any) => {
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+      setStockLimitError(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  });
+
+  if (!isVisible) return null;
+
+  return <p className=" text-center">Stock not currently available</p>;
+};
+
 const ItemPopUp = ({
   id,
   item_name,
@@ -12,12 +29,14 @@ const ItemPopUp = ({
   setOpenModal,
 }: any) => {
   const dispatch = useDispatch();
-  const itemSelected = useSelector(
+  const itemSelectedCart = useSelector(
     (state: any) =>
       state.cart.cart[
         state.cart.cart.findIndex((element: any) => element.id === id)
       ]
   );
+
+  const [stockLimitError, setStockLimitError] = useState<boolean>(false);
 
   const handleItemAddClick = (
     id: any,
@@ -52,7 +71,7 @@ const ItemPopUp = ({
         }
       }}
     >
-      <div className="bg-white px-8 py-6 rounded-lg shadow-xl w-full max-w-md">
+      <div className="bg-white px-8 pt-6 pb-3 rounded-lg shadow-xl w-full max-w-md">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold  text-gray-800">{item_name}</h2>
           <button
@@ -87,11 +106,11 @@ const ItemPopUp = ({
             <span className="font-semibold">Units/Case:</span>
             <span>{item_units}</span>
           </p>
-          {itemSelected && itemSelected.quantity > 0 ? (
+          {itemSelectedCart && itemSelectedCart.quantity > 0 ? (
             <p className="flex justify-between font-bold">
               <span className="text-turqoise">Total Price:</span>
               <span className="underline decoration-amber-500">
-                ${(itemSelected.quantity * item_price).toFixed(2)}
+                ${(itemSelectedCart.quantity * item_price).toFixed(2)}
               </span>
             </p>
           ) : (
@@ -100,7 +119,7 @@ const ItemPopUp = ({
             </p>
           )}
         </div>
-        <div className="mt-6 flex items-center justify-center">
+        <div className="mt-6 flex items-center justify-center w-full">
           <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
             <button
               onClick={() => handleItemRemoveClick(id)}
@@ -109,25 +128,42 @@ const ItemPopUp = ({
               -
             </button>
             <div className="px-4 py-2 bg-white text-center min-w-[3rem]">
-              {itemSelected ? itemSelected.quantity : 0}
+              {itemSelectedCart ? itemSelectedCart.quantity : 0}
             </div>
             <button
-              onClick={() =>
-                handleItemAddClick(
-                  id,
-                  item_name,
-                  item_price,
-                  item_stock,
-                  item_size,
-                  item_units
-                )
+              onClick={
+                itemSelectedCart && itemSelectedCart.quantity >= item_stock
+                  ? () => {
+                      setStockLimitError(true);
+                    }
+                  : () =>
+                      handleItemAddClick(
+                        id,
+                        item_name,
+                        item_price,
+                        item_stock,
+                        item_size,
+                        item_units
+                      )
               }
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium transition duration-150"
+              className={`px-4 py-2
+                ${
+                  itemSelectedCart && itemSelectedCart.quantity >= item_stock
+                    ? "bg-gray-500 text-gray-800 font-medium cursor-auto"
+                    : "bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium transition duration-150"
+                }`}
             >
               +
             </button>
           </div>
         </div>
+        {stockLimitError ? (
+          <TempErrorMessage setStockLimitError={setStockLimitError} />
+        ) : (
+          <p>
+            <br />
+          </p>
+        )}
       </div>
     </div>
   );

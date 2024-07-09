@@ -9,7 +9,7 @@ export default function Home() {
         <span className="orange_gradient text-center"> from Hi Yogurt</span>
       </h1>
       <p className="desc text-center mt-5 font-merriweather">
-        The premier way to buy Hi Yogurt Inventory and track it.
+        Place your inventory orders here!
       </p>
       <Feed />
     </section>

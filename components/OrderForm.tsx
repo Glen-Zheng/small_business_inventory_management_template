@@ -1,11 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { emptyCart } from "@/store_redux/slices/cartSlice";
 import { useRouter } from "next/navigation";
 
 const OrderForm = ({ orderTotal }: any) => {
   const [confirmOrder, setConfirmOrder] = useState<boolean>(false);
+  const dispatch = useDispatch();
   const cart = useSelector((state: any) => state.cart.cart);
   const locationSession = useSelector(
     (state: any) => state.storeLocation.sessionUser
@@ -18,6 +20,26 @@ const OrderForm = ({ orderTotal }: any) => {
   useEffect(() => {
     setConfirmOrder(false);
   }, [contactInfo, orderLocation, contactName]);
+
+  const sendEmailOrder = async () => {
+    try {
+      const response = await fetch("/api/orders/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pdfContent: cart,
+          email: contactInfo,
+          total: orderTotal,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("email with order details sent");
+      }
+    } catch (error) {
+      console.error("failed to email order details");
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -36,9 +58,11 @@ const OrderForm = ({ orderTotal }: any) => {
         }),
       });
       if (response.ok) {
+        await sendEmailOrder();
         alert(
-          "Order placed. Your order is being processed. Please send a cheque or E-transfer Hi Yogurt. Thank you!"
+          "Order placed. Please send a cheque or E-transfer Hi Yogurt. Thank you."
         );
+        dispatch(emptyCart());
         router.push("/shop");
       }
     } catch {
@@ -76,15 +100,15 @@ const OrderForm = ({ orderTotal }: any) => {
           </div>
           <div>
             <label
-              htmlFor="contactnum"
+              htmlFor="contactmail"
               className="block text-sm font-medium text-gray-700"
             >
-              Contact Number
+              Contact Email
             </label>
             <input
               onChange={(e) => setContactInfo(e.target.value)}
               required
-              id="contactnum"
+              id="contactmail"
               maxLength={255}
               type="text"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
