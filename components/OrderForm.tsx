@@ -14,12 +14,12 @@ const OrderForm = ({ orderTotal }: any) => {
   );
   const [contactName, setContactName] = useState<string>("");
   const [contactInfo, setContactInfo] = useState<string>("");
-  const [orderLocation, setorderLocation] = useState<string>("");
+  const [shippingLocation, setShippingLocation] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
     setConfirmOrder(false);
-  }, [contactInfo, orderLocation, contactName]);
+  }, [contactInfo, shippingLocation, contactName]);
 
   const sendEmailOrder = async () => {
     try {
@@ -41,7 +41,7 @@ const OrderForm = ({ orderTotal }: any) => {
     }
   };
 
-  const handleSubmit = async () => {
+  const placeOrder = async () => {
     try {
       const response = await fetch("/api/orders/new", {
         method: "POST",
@@ -53,14 +53,14 @@ const OrderForm = ({ orderTotal }: any) => {
           total_amount: orderTotal,
           contact_info: contactInfo,
           contact_name: contactName,
-          location: orderLocation,
+          location: shippingLocation,
           sessionLocation: locationSession,
         }),
       });
       if (response.ok) {
         await sendEmailOrder();
         alert(
-          "Order placed. Please send a cheque or E-transfer Hi Yogurt. Thank you."
+          "Success! An overview of your order has been sent to your email. Please send a cheque to or E-transfer Hi Yogurt. Thank you."
         );
         dispatch(emptyCart());
         router.push("/shop");
@@ -122,7 +122,7 @@ const OrderForm = ({ orderTotal }: any) => {
               Shipping Address
             </label>
             <input
-              onChange={(e) => setorderLocation(e.target.value)}
+              onChange={(e) => setShippingLocation(e.target.value)}
               required
               id="shiploc"
               maxLength={255}
@@ -145,7 +145,7 @@ const OrderForm = ({ orderTotal }: any) => {
             <h3 className="text-lg font-bold mb-4">Confirm and place order?</h3>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={handleSubmit}
+                onClick={placeOrder}
                 className="bg-fuchsia-700 text-white px-4 py-2 rounded hover:bg-turqoise transition duration-200"
               >
                 Yes

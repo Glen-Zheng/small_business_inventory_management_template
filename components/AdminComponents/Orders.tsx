@@ -135,6 +135,26 @@ const Orders = () => {
                               </span>
                             </div>
                           ))}
+                          <div className="bg-white p-4 rounded-lg shadow-md shadow-turqoise w-fit">
+                            <p className="font-semibold font-merriweather">
+                              Contact Name:{" "}
+                              <span className="font-normal">
+                                {order.contact_name}
+                              </span>
+                            </p>
+                            <p className="font-semibold font-merriweather">
+                              Contact Email:{" "}
+                              <span className="font-normal">
+                                {order.contact_info}
+                              </span>
+                            </p>
+                            <p className="font-semibold font-merriweather">
+                              Shipping Address:{" "}
+                              <span className="font-normal">
+                                {order.buyer_location}
+                              </span>
+                            </p>
+                          </div>
                           <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between items-center">
                             {order.order_status === "Pending" && (
                               <p

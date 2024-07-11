@@ -16,7 +16,7 @@ const TempErrorMessage = ({ setStockLimitError }: any) => {
 
   if (!isVisible) return null;
 
-  return <p className=" text-center">Stock not currently available</p>;
+  return <p className=" text-center">Out of stock.</p>;
 };
 
 const ItemPopUp = ({

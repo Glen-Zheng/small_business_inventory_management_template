@@ -30,7 +30,7 @@ export async function POST(req) {
       );
       //the first object is the payload, very important when creating cookie
       const token = jwt.sign(
-        { userID: storeID, role: "user" },
+        { userID: storeID, role: "store" },
         process.env.JWT_secret,
         {
           expiresIn: "1h",

@@ -31,6 +31,7 @@ export const config = {
   matcher: [
     "/cart",
     "/shop",
+    "/api/stores/logout",
     "/api/shop/:path",
     "/api/orders/:path",
     "/admin",
