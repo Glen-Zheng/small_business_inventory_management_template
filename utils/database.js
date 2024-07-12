@@ -8,6 +8,9 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  ssl: {
+    ca: process.env.DB_SSL_CA,
+  },
 });
 
 export default pool;

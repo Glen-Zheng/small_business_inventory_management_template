@@ -1,18 +1,34 @@
 {
-    "sqltools.connections": [
-        {
-            "mysqlOptions": {
-                "authProtocol": "default",
-                "enableSsl": "Disabled"
-            },
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "Hi Yogurt",
-            "database": "hiyogurtinventory",
-            "username": "root",
-            "password": "Andsti11kingofarts&sci"
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "Hi Yogurt",
+      "database": "hiyogurtinventory",
+      "username": "root",
+      "password": "Andsti11kingofarts&sci"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Enabled",
+        "ssl": {
+          "ca": "C:\\Users\\zheng\\Downloads\\ca.pem"
         }
-    ]
+      },
+      "previewLimit": 50,
+      "server": "hi-yogurt-iinventory-website-db-hi-yogurt-inventory-website.c.aivencloud.com",
+      "port": 20171,
+      "driver": "MySQL",
+      "name": "hi yogurt inventory website db",
+      "database": "defaultdb",
+      "username": "avnadmin"
+    }
+  ]
 }

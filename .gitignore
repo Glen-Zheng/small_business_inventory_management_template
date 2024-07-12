@@ -36,4 +36,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+hi yogurt inventory website db.session.sql
 Hi Yogurt.session.sql
