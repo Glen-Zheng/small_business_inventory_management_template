@@ -28,7 +28,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
     setEditItems(newMap);
   };
 
-  const deleteItem = async (id: Number) => {
+  const deleteItem = async (id: number) => {
     try {
       const response = await fetch("/api/admin/inventory/items", {
         method: "DELETE",
@@ -58,6 +58,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
   };
 
   const createItem = async (
+    e: any,
     categoryId: number,
     item_name: string,
     item_price: number,
@@ -65,6 +66,14 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
     item_size: string,
     item_units: string
   ) => {
+    e.preventDefault();
+    setItemName("");
+    setItemPrice(0);
+    setItemStock(0);
+    setItemSize("");
+    setItemUnits("");
+    setItemCat(0);
+
     try {
       const response = await fetch("/api/admin/inventory/items", {
         method: "POST",
@@ -74,7 +83,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
         body: JSON.stringify({
           categoryId,
           item_name,
-          item_price,
+          item_price: item_price.toFixed(2),
           item_stock,
           item_size,
           item_units,
@@ -82,14 +91,23 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
       });
 
       if (response.ok) {
-        const newAdminInventoryItems = adminInventoryItems.push({
-          item_name,
-          category_name: "Work in progress",
-          item_price,
-          item_stock,
-          item_size,
-          item_units,
-        });
+        const data = await response.json();
+        const index = adminInventoryItems.findIndex(
+          (e: any) => e.category_id === categoryId + 1
+        );
+        const newAdminInventoryItems = [
+          ...adminInventoryItems.slice(0, index),
+          {
+            id: data.createdItemID,
+            item_name,
+            category_name: data.createdItemCat,
+            item_price,
+            item_stock,
+            item_size,
+            item_units,
+          },
+          ...adminInventoryItems.slice(index),
+        ];
         setAdminInventoryItems(newAdminInventoryItems);
         console.log("item added successfully");
       }
@@ -101,6 +119,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
 
   const editStock = async (e: any, id: number, stockAmount: any) => {
     e.preventDefault();
+
     try {
       const response = await fetch("/api/admin/inventory/items", {
         method: "PATCH",
@@ -237,8 +256,9 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
       <div className="mt-8 bg-white shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-bold text-teal-600 mb-4">Create Item</h2>
         <form
-          onSubmit={() =>
+          onSubmit={(e) =>
             createItem(
+              e,
               itemCat,
               itemName,
               itemPrice,

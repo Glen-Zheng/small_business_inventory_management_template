@@ -11,7 +11,7 @@ export async function GET(req) {
       return new Response(
         JSON.stringify({ message: "no existing user - no token found" }),
         {
-          status: 401,
+          status: 404,
           headers: { "Content-Type": "application/json" },
         }
       );

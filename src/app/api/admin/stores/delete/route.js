@@ -8,9 +8,11 @@ export const DELETE = async (request) => {
         status: 400,
       });
     }
-    const query = "DELETE FROM stores WHERE store_location = ?";
+    // const query = "DELETE FROM stores WHERE store_location = ?";
+    const query = "UPDATE stores SET is_deleted = ? WHERE store_location = ?";
+    //implemented soft delete to maintain referential data integrity with deleting
 
-    const [result] = await pool.execute(query, [store]);
+    const [result] = await pool.execute(query, [1, store]);
 
     if (result.affectedRows === 1) {
       return new Response("Successful deletion of store", { status: 200 });

@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import writeXlsxFile from "write-excel-file/node";
 
 export async function POST(req) {
   try {
@@ -15,18 +16,59 @@ export async function POST(req) {
     // Create text content
     let textContent = "Order Details:\n\n";
 
+    const data = [];
+
+    const row = [
+      {
+        value: "Item",
+        fontWeight: "bold",
+      },
+      {
+        value: "Quantity",
+        fontWeight: "bold",
+      },
+      {
+        value: "Item Size and Units",
+        fontWeight: "bold",
+      },
+      {
+        value: "Price",
+        fontWeight: "bold",
+      },
+    ];
+    data.push(row);
+
     for (let i = 0; i < pdfContent.length; ++i) {
       if (pdfContent[i] && pdfContent[i].item_name) {
-        textContent += `${pdfContent[i].item_name} x${
-          pdfContent[i].quantity
-        } : $${(pdfContent[i].quantity * pdfContent[i].item_price).toFixed(
-          2
-        )}\n`;
+        const row = [
+          { value: pdfContent[i].item_name },
+          { value: `x${pdfContent[i].quantity}` },
+          {
+            value: ` ${pdfContent[i].item_size} - ${pdfContent[i].quantity}`,
+          },
+          {
+            value: `$${(
+              pdfContent[i].quantity * pdfContent[i].item_price
+            ).toFixed(2)}`,
+          },
+        ];
+        data.push(row);
       } else {
         console.warn(`Invalid item at index ${i}:`, pdfContent[i]);
       }
     }
-    textContent += `\n\n Total: $${total.toFixed(2)}`;
+
+    data.push(
+      [],
+      [
+        { value: null },
+        { value: null },
+        { value: null },
+        { value: `Total: $${total.toFixed(2)}` },
+      ]
+    );
+    // textContent += `\n\n Total: $${total.toFixed(2)}`;
+    const stream = await writeXlsxFile(data, {});
 
     // Set up nodemailer
     let transporter = nodemailer.createTransport({
@@ -51,8 +93,8 @@ export async function POST(req) {
       text: "Please find your order details attached.",
       attachments: [
         {
-          filename: "order_details.txt",
-          content: textContent,
+          filename: "order_details.xlsx ",
+          content: stream,
         },
       ],
     };

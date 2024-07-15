@@ -66,14 +66,117 @@ export const PATCH = async (request) => {
   }
 };
 
-// export const DELETE = async (request, { params }) => {
+export const POST = async (request) => {
+  let connection;
+  try {
+    const { id } = await request.json();
+
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    await connection.execute("DROP TEMPORARY TABLE IF EXISTS temp_deleted");
+    await connection.execute("DROP TEMPORARY TABLE IF EXISTS temp_deleted2");
+
+    await connection.execute(
+      `
+      CREATE TEMPORARY TABLE temp_deleted(id INT PRIMARY KEY) AS
+      SELECT * FROM store_orders WHERE id = ?
+    `,
+      [id]
+    );
+
+    await connection.execute(
+      `
+      CREATE TEMPORARY TABLE temp_deleted2(id INT PRIMARY KEY) AS
+      SELECT * FROM ordered_items WHERE order_id = ?
+    `,
+      [id]
+    );
+
+    await connection.execute("DELETE FROM store_orders WHERE id = ?", [id]);
+
+    await connection.execute(`
+      INSERT INTO archived_orders (
+        id, store_id, total_amount, order_date, contact_info,
+        contact_name, buyer_location, order_status
+      )
+      SELECT id, store_id, total_amount, order_date, contact_info,
+        contact_name, buyer_location, order_status
+      FROM temp_deleted
+    `);
+
+    await connection.execute(`
+      INSERT INTO archived_ordered_items
+      SELECT * FROM temp_deleted2
+    `);
+
+    await connection.execute("DROP TEMPORARY TABLE temp_deleted");
+    await connection.execute("DROP TEMPORARY TABLE temp_deleted2");
+
+    await connection.commit();
+
+    return new Response("Successful order archive", { status: 200 });
+  } catch (error) {
+    if (connection) await connection.rollback();
+    console.error("Error:", error);
+    return new Response("Failed to archive order", { status: 500 });
+  } finally {
+    if (connection) connection.release();
+  }
+};
+
+// export const POST = async (request) => {
 //   try {
-//     await connectToDB();
+//     const { id } = await request.json();
 
-//     await Prompt.findByIdAndDelete(params.id);
+//     await pool.beginTransaction();
 
-//     return new Response("prompt deleted successfully", { status: 200 });
+//     await connection.execute("DROP TEMPORARY TABLE IF EXISTS temp_deleted");
+//     await connection.execute("DROP TEMPORARY TABLE IF EXISTS temp_deleted2");
+
+//     await connection.execute(
+//       `
+//       CREATE TEMPORARY TABLE temp_deleted(id INT PRIMARY KEY) AS
+//       SELECT * FROM store_orders WHERE id = ?
+//     `,
+//       [id]
+//     );
+
+//     await connection.execute(
+//       `
+//       CREATE TEMPORARY TABLE temp_deleted2(id INT PRIMARY KEY) AS
+//       SELECT * FROM ordered_items WHERE order_id = ?
+//     `,
+//       [id]
+//     );
+
+//     await connection.execute("DELETE FROM store_orders WHERE id = ?", [id]);
+
+//     await connection.execute(`
+//       INSERT INTO archived_orders (
+//         id, store_id, total_amount, order_date, contact_info,
+//         contact_name, buyer_location, order_status
+//       )
+//       SELECT id, store_id, total_amount, order_date, contact_info,
+//         contact_name, buyer_location, order_status
+//       FROM temp_deleted
+//     `);
+
+//     await connection.execute(`
+//       INSERT INTO archived_ordered_items
+//       SELECT * FROM temp_deleted2
+//     `);
+
+//     await connection.execute("DROP TEMPORARY TABLE temp_deleted");
+//     await connection.execute("DROP TEMPORARY TABLE temp_deleted2");
+
+//     await connection.commit();
+//     const result = await pool.execute(query, [id, id, id]);
+
+//     console.log(result);
+
+//     return new Response("Successful order archive", { status: 200 });
 //   } catch (error) {
-//     return new Response("Failed to delte prompt", { status: 500 });
+//     return new Response("Failed to arhive order", { status: 500 });
 //   }
 // };

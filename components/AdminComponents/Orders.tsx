@@ -15,7 +15,6 @@ const Orders = () => {
         const data = await response.json();
 
         setOrders(data);
-        console.log(data);
       } catch (error) {
         console.log("failed to get the inventory orders", error);
       }
@@ -30,7 +29,6 @@ const Orders = () => {
       let total: number = 0;
       for (const order of orders) {
         initialOrderData.set(order.order_id, false);
-        console.log(typeof order.total_amount);
         if (order.total_amount !== null) total += Number(order.total_amount);
       }
       setOrderData(initialOrderData);
@@ -52,11 +50,16 @@ const Orders = () => {
       });
 
       if (response.ok) {
-        let ordersObject = orders;
-        ordersObject[
-          ordersObject.findIndex((element: any) => element.order_id === orderId)
-        ].order_status = "Completed";
-        setOrders(ordersObject);
+        setOrders((prevOrders) => {
+          const updatedOrders = [...prevOrders]; // Create a new array based on prevOrders
+          const index = updatedOrders.findIndex(
+            (order) => order.order_id === orderId
+          );
+          if (index !== -1) {
+            updatedOrders[index].order_status = "Completed";
+          }
+          return updatedOrders;
+        });
       }
     } catch (error) {
       console.log("failed to mark order complete, error");
@@ -67,6 +70,33 @@ const Orders = () => {
     const toggled = newMap.get(id) || false;
     newMap.set(id, !toggled);
     setOrderData(newMap);
+  };
+
+  const archiveOrder = async (e: any, id: number) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch("/api/admin/inventory/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+        }),
+      });
+      if (response.ok) {
+        setOrders((prevOrders) => {
+          const updatedOrders = [...prevOrders];
+          const index = updatedOrders.findIndex(
+            (order) => order.order_id === id
+          );
+          if (index !== -1) {
+            updatedOrders.splice(index, 1);
+          }
+          return updatedOrders;
+        });
+      }
+    } catch (error) {
+      console.error("error occurred with archiving");
+    }
   };
 
   //redo this when we update the orders.
@@ -112,11 +142,17 @@ const Orders = () => {
                       ) : null}
                       {order.order_status}
                     </span>
-                    <i
-                      className={`fas fa-chevron-${
-                        orderData.get(order.order_id) ? "up" : "down"
-                      } text-gray-400 justify-self-end`}
-                    ></i>
+                    <div className="justify-self-end flex w-6/12 justify-between">
+                      <i
+                        onClick={(e) => archiveOrder(e, order.order_id)}
+                        className="fa-solid fa-box-archive text-orange-900 hover:text-turqoise"
+                      ></i>
+                      <i
+                        className={`fas fa-chevron-${
+                          orderData.get(order.order_id) ? "up" : "down"
+                        } text-gray-400 `}
+                      ></i>
+                    </div>
                   </div>
                   {orderData.get(order.order_id) && (
                     <div className="bg-gray-50 p-4">
@@ -177,7 +213,7 @@ const Orders = () => {
                 </div>
               ))}
         </div>
-        <p>Gross Total: ${grossTotal}</p>
+        <p>Gross Total: ${grossTotal.toFixed(2)}</p>
       </div>
     </div>
   );
