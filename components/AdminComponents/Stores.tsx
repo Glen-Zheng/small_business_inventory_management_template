@@ -6,7 +6,7 @@ import NewStore from "../NewStore";
 import DeleteStore from "../DeleteStore";
 
 const Stores = () => {
-  const [adminStores, setAdminStores] = useState<string[]>([]);
+  const [adminStores, setAdminStores] = useState<any[]>([]);
   useEffect(() => {
     async function fetchStores() {
       try {
@@ -27,7 +27,7 @@ const Stores = () => {
     <div className="w-full">
       <div className="w-full">
         <h1 className="text-2xl font-bold">Edit Stores</h1>
-        <NewStore />
+        <NewStore setAdminStores={setAdminStores} />
         <DeleteStore
           adminStores={adminStores}
           setAdminStores={setAdminStores}

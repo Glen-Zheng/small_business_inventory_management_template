@@ -2,7 +2,7 @@
 import { useState } from "react";
 import React from "react";
 
-const NewStore = () => {
+const NewStore = ({ setAdminStores }: any) => {
   const [storeLocation, setStoreLocation] = useState<string>("");
   const [storePassword, setStorePassword] = useState<any>("");
 
@@ -56,7 +56,15 @@ const NewStore = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
         setAdminPassError(false);
+        setAdminStores((prevStores: any) => {
+          const newStores = [
+            ...prevStores,
+            { id: data.id, store_location: storeLocation },
+          ];
+          return newStores;
+        });
         // setStoreRegistered((prev: any) => !prev);
 
         console.log("Registration successful");

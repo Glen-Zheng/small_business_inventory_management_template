@@ -14,8 +14,11 @@ export async function POST(req) {
     const [result] = await pool.execute(query, [storeLocation, hashedPassword]);
 
     if (result.affectedRows === 1) {
+      const [[{ "LAST_INSERT_ID()": newStoreId }]] = await pool.execute(
+        "SELECT LAST_INSERT_ID();"
+      );
       return new Response(
-        JSON.stringify({ message: "Successfully added store" }),
+        JSON.stringify({ message: "Successfully added store", id: newStoreId }),
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
