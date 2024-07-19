@@ -11,8 +11,10 @@ const Stores = () => {
     async function fetchStores() {
       try {
         const response = await fetch("/api/stores");
-        const data = await response.json();
-        setAdminStores(data);
+        if (response.ok) {
+          const data = await response.json();
+          setAdminStores(data);
+        }
       } catch (error) {
         console.error("Error fetching stores:", error);
       }

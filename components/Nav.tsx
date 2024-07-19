@@ -49,12 +49,13 @@ const Nav = () => {
             <div className="flex items-center space-x-4">
               <div className="flex flex-col items-end">
                 <p className="font-bold text-white">Store: {user}</p>
-                <button
+                <Link
+                  href={"/"}
                   className=" self-center text-white text-sm border border-white bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded transition duration-300 ease-in-out"
                   onClick={() => logout()}
                 >
                   Logout
-                </button>
+                </Link>
               </div>
               <Link
                 href="/cart"

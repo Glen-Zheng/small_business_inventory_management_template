@@ -9,6 +9,9 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
   const [itemUnits, setItemUnits] = useState<string>("");
   const [itemCat, setItemCat] = useState<number>(0);
   const [editItems, setEditItems] = useState<Map<number, boolean>>(new Map());
+  const [editPrice, setEditPrice] = useState<Map<number, boolean>>(new Map());
+  const [editSize, setEditSize] = useState<Map<number, boolean>>(new Map());
+  const [editUnits, setEditUnits] = useState<Map<number, boolean>>(new Map());
 
   useEffect(() => {
     if (adminInventoryItems.length !== 0) {
@@ -18,14 +21,42 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
         initialItemsData.set(item.id, false);
       }
       setEditItems(initialItemsData);
+      setEditPrice(initialItemsData);
+      setEditSize(initialItemsData);
+      setEditUnits(initialItemsData);
     }
   }, [adminInventoryItems]);
 
-  const toggleEditStock = (id: number) => {
-    const newMap = new Map(editItems);
-    const toggled = newMap.get(id) || false;
-    newMap.set(id, !toggled);
-    setEditItems(newMap);
+  const toggleEdit = (id: number, selectedToEdit: string) => {
+    const toggle = (
+      map: Map<number, boolean>,
+      setMap: React.Dispatch<React.SetStateAction<Map<number, boolean>>>
+    ) => {
+      const newMap = new Map(map);
+      const toggled = newMap.get(id) || false;
+      newMap.set(id, !toggled);
+      setMap(newMap);
+    };
+    switch (selectedToEdit) {
+      case "stock":
+        toggle(editItems, setEditItems);
+        break;
+      case "price":
+        toggle(editPrice, setEditPrice);
+
+        break;
+      case "size":
+        toggle(editSize, setEditSize);
+
+        break;
+      case "units":
+        toggle(editUnits, setEditUnits);
+        break;
+      default:
+        console.warn(
+          `Unknown filed you're trying to edit (DNE): ${selectedToEdit}`
+        );
+    }
   };
 
   const deleteItem = async (id: number) => {
@@ -117,7 +148,12 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
     }
   };
 
-  const editStock = async (e: any, id: number, stockAmount: any) => {
+  const editStock = async (
+    e: any,
+    id: number,
+    value: any,
+    operation: string
+  ) => {
     e.preventDefault();
 
     try {
@@ -128,22 +164,37 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
         },
         body: JSON.stringify({
           id,
-          stockAmount,
+          value,
+          operation,
         }),
       });
 
       if (response.ok) {
-        toggleEditStock(id);
+        toggleEdit(id, operation);
         const index = adminInventoryItems.findIndex(
           (value: any) => value.id === id
         );
         console.log(index);
         if (index !== -1) {
           const newadminInventoryItems = adminInventoryItems;
-          newadminInventoryItems[index].item_stock = Number(stockAmount);
+          switch (operation) {
+            case "stock":
+              newadminInventoryItems[index].item_stock = Number(value);
+              break;
+            case "price":
+              newadminInventoryItems[index].item_price =
+                Number(value).toFixed(2);
+              break;
+            case "size":
+              newadminInventoryItems[index].item_size = String(value);
+              break;
+            case "units":
+              newadminInventoryItems[index].item_units = String(value);
+              break;
+          }
           setAdminInventoryItems(newadminInventoryItems);
+          console.log("item added successfully");
         }
-        console.log("item added successfully");
       }
     } catch (error) {
       alert("request failed");
@@ -192,22 +243,69 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
                   {item.category_name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  ${item.item_price}
+                  <span className={`mr-2`}> ${item.item_price}</span>
+                  {editPrice.get(item.id) ? (
+                    <form
+                      onSubmit={(e: any) =>
+                        editStock(
+                          e,
+                          item.id,
+                          e.target.elements.priceAmount.value,
+                          "price"
+                        )
+                      }
+                      className="inline-flex items-center"
+                    >
+                      <input
+                        name="priceAmount"
+                        type="number"
+                        step=".01"
+                        className="w-20 border border-gray-300 rounded px-2 py-1 mr-2"
+                      />
+                      <button
+                        type="submit"
+                        className="text-teal-600 hover:text-teal-800 mr-2"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => toggleEdit(item.id, "price")}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => toggleEdit(item.id, "price")}
+                      className="text-teal-600 hover:text-teal-800 hover:underline"
+                    >
+                      Edit
+                    </button>
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="mr-2">{item.item_stock}</span>
+                  <span
+                    className={`mr-2 ${
+                      item.item_stock <= 15 ? "text-red-600" : ""
+                    }`}
+                  >
+                    {item.item_stock}
+                  </span>
                   {editItems.get(item.id) ? (
                     <form
                       onSubmit={(e: any) =>
                         editStock(
                           e,
                           item.id,
-                          e.target.elements.stockAmount.value
+                          e.target.elements.stockAmount.value,
+                          "stock"
                         )
                       }
                       className="inline-flex items-center"
                     >
                       <input
+                        min="0"
                         name="stockAmount"
                         type="number"
                         className="w-16 border border-gray-300 rounded px-2 py-1 mr-2"
@@ -219,7 +317,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
                         Save
                       </button>
                       <button
-                        onClick={() => toggleEditStock(item.id)}
+                        onClick={() => toggleEdit(item.id, "stock")}
                         className="text-gray-600 hover:text-gray-800"
                       >
                         Cancel
@@ -227,7 +325,7 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
                     </form>
                   ) : (
                     <button
-                      onClick={() => toggleEditStock(item.id)}
+                      onClick={() => toggleEdit(item.id, "stock")}
                       className="text-teal-600 hover:text-teal-800 hover:underline"
                     >
                       Edit
@@ -235,10 +333,86 @@ const EditStock = ({ adminInventoryItems, setAdminInventoryItems }: any) => {
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {item.item_size}
+                  <span className="mr-2"> {item.item_size}</span>
+                  {editSize.get(item.id) ? (
+                    <form
+                      onSubmit={(e: any) =>
+                        editStock(
+                          e,
+                          item.id,
+                          e.target.elements.sizeAmount.value,
+                          "size"
+                        )
+                      }
+                      className="inline-flex items-center"
+                    >
+                      <input
+                        name="sizeAmount"
+                        type="text"
+                        className="w-16 border border-gray-300 rounded px-2 py-1 mr-2"
+                      />
+                      <button
+                        type="submit"
+                        className="text-teal-600 hover:text-teal-800 mr-2"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => toggleEdit(item.id, "size")}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => toggleEdit(item.id, "size")}
+                      className="text-teal-600 hover:text-teal-800 hover:underline"
+                    >
+                      Edit
+                    </button>
+                  )}{" "}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {item.item_units}
+                  <span className="mr-2"> {item.item_units}</span>
+                  {editUnits.get(item.id) ? (
+                    <form
+                      onSubmit={(e: any) =>
+                        editStock(
+                          e,
+                          item.id,
+                          e.target.elements.unitsAmount.value,
+                          "units"
+                        )
+                      }
+                      className="inline-flex items-center"
+                    >
+                      <input
+                        name="unitsAmount"
+                        type="text"
+                        className="w-16 border border-gray-300 rounded px-2 py-1 mr-2"
+                      />
+                      <button
+                        type="submit"
+                        className="text-teal-600 hover:text-teal-800 mr-2"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => toggleEdit(item.id, "units")}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => toggleEdit(item.id, "units")}
+                      className="text-teal-600 hover:text-teal-800 hover:underline"
+                    >
+                      Edit
+                    </button>
+                  )}{" "}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button

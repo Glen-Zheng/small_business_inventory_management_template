@@ -26,7 +26,7 @@ const ShopItems = ({ category, setCategory }: any) => {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-xl shadow-md overflow-hidden mb-5">
         <div className="flex flex-row w-full bg-gray-100 font-bold text-gray-700">
           <p className="w-4/12 py-3 px-4">Item</p>
           <p className="w-3/12 py-3 px-4">Size</p>

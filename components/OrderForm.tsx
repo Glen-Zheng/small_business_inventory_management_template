@@ -4,6 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { emptyCart } from "@/store_redux/slices/cartSlice";
 import { useRouter } from "next/navigation";
+import LoadingOverlay from "./LoadingOverlay";
 
 const OrderForm = ({ orderTotal }: any) => {
   const [confirmOrder, setConfirmOrder] = useState<boolean>(false);
@@ -16,6 +17,7 @@ const OrderForm = ({ orderTotal }: any) => {
   const [contactInfo, setContactInfo] = useState<string>("");
   const [shippingLocation, setShippingLocation] = useState<string>("");
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setConfirmOrder(false);
@@ -29,7 +31,10 @@ const OrderForm = ({ orderTotal }: any) => {
         body: JSON.stringify({
           pdfContent: cart,
           email: contactInfo,
+          name: contactName,
+          store: locationSession,
           total: orderTotal,
+          shipping_location: shippingLocation,
         }),
       });
 
@@ -42,6 +47,9 @@ const OrderForm = ({ orderTotal }: any) => {
   };
 
   const placeOrder = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+
     try {
       const response = await fetch("/api/orders/new", {
         method: "POST",
@@ -67,6 +75,8 @@ const OrderForm = ({ orderTotal }: any) => {
       }
     } catch {
       console.error("Failed to process order");
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -146,10 +156,12 @@ const OrderForm = ({ orderTotal }: any) => {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={placeOrder}
-                className="bg-fuchsia-700 text-white px-4 py-2 rounded hover:bg-turqoise transition duration-200"
+                disabled={isLoading} //redundant but a guarantee
+                className={`bg-fuchsia-700 text-white px-4 py-2 rounded hover:bg-turqoise transition duration-200`}
               >
                 Yes
               </button>
+
               <button
                 onClick={() => setConfirmOrder(false)}
                 className="bg-sky-900 text-white px-4 py-2 rounded hover:bg-turqoise transition duration-200"
@@ -160,6 +172,7 @@ const OrderForm = ({ orderTotal }: any) => {
           </div>
         </div>
       )}
+      {isLoading && <LoadingOverlay />}
     </div>
   );
 };

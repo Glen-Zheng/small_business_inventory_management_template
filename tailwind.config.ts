@@ -22,8 +22,24 @@ const config: Config = {
       fontSize: {
         '2xs': "0.4rem",
       },
+      animation: {
+        shimmer: 'shimmer 1s infinite',
+        'bounce-down': 'bounce-down 0.3s ease-in-out',
+
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
     },
   },
   plugins: [],
+    variants: {
+    extend: {
+      animation: ['group-hover', 'group-active'],
+    },
+  },
 };
 export default config;

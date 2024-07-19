@@ -111,17 +111,30 @@ export const POST = async (req) => {
   }
 };
 export const PATCH = async (req) => {
-  const { id, stockAmount } = await req.json();
+  const { id, value, operation } = await req.json();
+  const allowedColumns = ["stock", "price", "units", "size"];
+
+  if (!allowedColumns.includes(operation)) {
+    return new Response("Invalid field that you are attempting to edit", {
+      status: 400,
+    });
+  }
 
   try {
-    const query = "UPDATE inventory_items SET item_stock = ? WHERE id = ?";
+    const query = `UPDATE inventory_items SET item_${operation} = ? WHERE id = ?`;
 
-    const [result] = await pool.execute(query, [stockAmount, id]);
+    console.log(value);
+
+    const [result] = await pool.execute(query, [value, id]);
 
     if (result.affectedRows === 1) {
       return new Response("Successful item stock update", { status: 200 });
+    } else {
+      return new Response("Item not found", { status: 404 });
     }
   } catch (error) {
-    return new Response("Failed to update item_stock", { status: 500 });
+    return new Response("Failed to update item's specified detail", {
+      status: 500,
+    });
   }
 };

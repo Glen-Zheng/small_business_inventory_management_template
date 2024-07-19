@@ -32,6 +32,8 @@ export async function POST(req) {
     );
 
     for (let i = 0; i < cart_array.length; ++i) {
+      const stockQuery =
+        "UPDATE inventory_items SET item_stock = ? WHERE id = ?;";
       const indItemQuery =
         "INSERT INTO ordered_items (order_id, inventory_item_id, quantity, cost) VALUES (?, ?, ?, ?)";
       const [result] = await pool.execute(indItemQuery, [
@@ -40,7 +42,11 @@ export async function POST(req) {
         cart_array[i].quantity,
         cart_array[i].quantity * cart_array[i].item_price,
       ]);
-      if (result.affectedRows !== 1) {
+      const [stockResult] = await pool.execute(stockQuery, [
+        cart_array[i].item_stock - cart_array[i].quantity,
+        cart_array[i].id,
+      ]);
+      if (result.affectedRows !== 1 && stockResult !== 1) {
         return new Response(
           JSON.stringify({ message: "Failed to add the order and its items" }),
           {

@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import React from "react";
-import Router from "next/navigation";
 import { useRouter } from "next/navigation";
 
 const AdminLogin = ({ setOpenModal }: any) => {

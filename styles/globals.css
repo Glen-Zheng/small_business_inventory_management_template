@@ -79,3 +79,36 @@
 .orange_gradient {
   @apply bg-gradient-to-r from-amber-500 via-orange-600 to-turqoise bg-clip-text text-transparent;
 }
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-wave {
+  @apply absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20;
+  transform: translateX(-100%);
+  transition: opacity 0.3s;
+}
+
+.group:hover .shimmer-wave {
+  animation: shimmer 1s infinite;
+}
+
+@keyframes bounce-down {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+.animate-bounce-down {
+  animation: bounce-down 0.3s ease-in-out;
+}

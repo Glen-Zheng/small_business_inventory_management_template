@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const Orders = () => {
   //may restrict orders in the future to only be the orders that i care about, which is why grosstotal should be a useState.
@@ -36,6 +38,50 @@ const Orders = () => {
     }
   }, [orders]);
   //shoukld remove it i think
+
+  const downloadOrderPDF = (e: any, order: any) => {
+    e.stopPropagation();
+
+    const doc = new jsPDF();
+
+    // Add title
+    doc.setFontSize(18);
+    doc.text(`Order #${order.order_id}`, 14, 22);
+
+    // Add order details
+    doc.setFontSize(12);
+    doc.text(`Date (UTC): ${order.order_date.substring(0, 10)}`, 14, 32);
+    doc.text(`Store: ${order.store_location}`, 14, 40);
+    doc.text(`Status: ${order.order_status}`, 14, 48);
+
+    // Add contact information
+    doc.text("Contact Information:", 14, 60);
+    doc.setFontSize(10);
+    doc.text(`Name: ${order.contact_name}`, 20, 68);
+    doc.text(`Email: ${order.contact_info}`, 20, 76);
+    doc.text(`Shipping Address: ${order.buyer_location}`, 20, 84);
+
+    // Add items table
+    doc.autoTable({
+      startY: 95,
+      head: [["Item", "Size - Units", "Quantity", "Cost"]],
+      body: order.items.map((item: any) => [
+        item.item_name,
+        `${item.item_size} - ${item.item_units}`,
+        item.item_quantity,
+        `$${item.item_cost}`,
+      ]),
+    });
+
+    // Add total
+    const finalY = doc.lastAutoTable.finalY || 120;
+    doc.setFontSize(12);
+    doc.setFont("merriweather", "bold");
+    doc.text(`Total: $${order.total_amount}`, 14, finalY + 10);
+
+    // Save the PDF
+    doc.save(`Order_${order.order_id}.pdf`);
+  };
 
   const orderComplete = async (orderId: number) => {
     try {
@@ -142,11 +188,19 @@ const Orders = () => {
                       ) : null}
                       {order.order_status}
                     </span>
-                    <div className="justify-self-end flex w-6/12 justify-between">
+                    <div className="justify-self-end flex w-9/12 justify-between">
                       <i
                         onClick={(e) => archiveOrder(e, order.order_id)}
-                        className="fa-solid fa-box-archive text-orange-900 hover:text-turqoise"
+                        className=" text-xl fa-solid fa-box-archive text-orange-900 hover:text-turqoise"
                       ></i>
+                      <div
+                        className="group"
+                        onClick={(e) => downloadOrderPDF(e, order)}
+                      >
+                        <div className="flex items-center justify-center cursor-pointer transition duration-300 ease-in-out">
+                          <i className=" text-xl text-emerald-500 group-hover:text-emerald-600 group-active:animate-bounce-down fas fa-file-arrow-down"></i>
+                        </div>
+                      </div>
                       <i
                         className={`fas fa-chevron-${
                           orderData.get(order.order_id) ? "up" : "down"
@@ -155,7 +209,7 @@ const Orders = () => {
                     </div>
                   </div>
                   {orderData.get(order.order_id) && (
-                    <div className="bg-gray-50 p-4">
+                    <div className="bg-amber-50 p-4">
                       {order.items.length ? (
                         <div className="space-y-2">
                           {order.items.map((item: any) => (
@@ -163,8 +217,11 @@ const Orders = () => {
                               key={item.item_name}
                               className="flex justify-between items-center"
                             >
-                              <span>
-                                {item.item_name} - {item.item_quantity}x
+                              <span className="font-medium">
+                                {item.item_name} -{" "}
+                                <span className="text-gray-600">
+                                  {item.item_quantity}x
+                                </span>
                               </span>
                               <span className="text-gray-600">
                                 ${item.item_cost}
@@ -197,7 +254,7 @@ const Orders = () => {
                                 onClick={() => orderComplete(order.order_id)}
                                 className="font-left underline hover:text-turqoise cursor-pointer"
                               >
-                                Mark as Complete (Irreversible)
+                                Mark as Completed (Irreversible)
                               </p>
                             )}
                             <p className="font-bold text-right grow">

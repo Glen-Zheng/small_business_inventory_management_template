@@ -1,6 +1,6 @@
 // hooks/useAuth.js
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import {
   authSuccess,
@@ -12,7 +12,7 @@ import { emptyCart } from "@/store_redux/slices/cartSlice";
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  // const router = useRouter();
   // const store_selected = useSelector(
   //   (state) => state.storeLocation.storeLocation
   // );
@@ -38,7 +38,8 @@ export function useAuth() {
     // if(store_selected)
     //do i need to restric this useEffect from running? in mmy get request for the token, i only allow it if the store selected is the same as the token, AS THAT IS THE WHOLE PURPOSE OF TOKENS IIN MY CASE so i don't need to. at the same time, if there is currently a
     loadUserFromCookie();
-  }, [dispatch, router]);
+  }, [dispatch]);
+  // }, [dispatch, router]);
 
   const login = async (sl, storePassword) => {
     const response = await fetch("/api/stores/login", {
@@ -80,7 +81,6 @@ export function useAuth() {
     await fetch("/api/stores/logout", { method: "POST" });
     dispatch(destroyLoggedin());
     dispatch(emptyCart());
-    router.push("/");
   };
 
   //can return user.

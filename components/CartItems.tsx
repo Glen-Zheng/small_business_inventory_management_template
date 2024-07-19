@@ -16,7 +16,8 @@ const CartItems = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [canProceed, setCanProceed] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [StockMaxed, setStockMaxed] = useState<boolean>(false);
 
   useEffect(() => {
     let totalItems: number = 0;
@@ -76,8 +77,17 @@ const CartItems = () => {
                     {cart_item.quantity}
                   </span>
                   <button
-                    className="px-2 py-1 bg-gray-200 rounded-r hover:bg-gray-300 transition-colors duration-300"
-                    onClick={() => dispatch(increaseItemQuantity(cart_item.id))}
+                    className={`px-2 py-1 rounded-r
+                      ${
+                        cart_item.quantity >= cart_item.item_stock
+                          ? "bg-gray-500 cursor-auto"
+                          : "bg-gray-200 hover:bg-gray-300 transition-colors duration-300"
+                      }`}
+                    onClick={
+                      cart_item.quantity >= cart_item.item_stock
+                        ? () => {}
+                        : () => dispatch(increaseItemQuantity(cart_item.id))
+                    }
                   >
                     +
                   </button>

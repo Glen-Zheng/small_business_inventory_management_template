@@ -41,7 +41,7 @@ const NewStore = () => {
   // };
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
+    // e.preventDefault();
     try {
       //do we need to check if the previous oen had an error? later
       const response = await fetch("/api/admin/stores/new", {
