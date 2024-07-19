@@ -4,29 +4,27 @@ import { useEffect, useState } from "react";
 
 const DeleteStore = ({ adminStores, setAdminStores }: any) => {
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
-  const [attemptedDelete, setAttemptedDelete] = useState<string>("");
+  const [attemptedDelete, setAttemptedDelete] = useState<number | null>(null);
 
-  const handleDeleteStore = async (store: string) => {
+  const handleDeleteStore = async (id: number) => {
     try {
       const response = await fetch("/api/admin/stores/delete", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          store,
+          id,
         }),
       });
 
       if (response.ok) {
-        const index = adminStores.findIndex(
-          (value: any) => value.store_location === store
-        );
+        const index = adminStores.findIndex((value: any) => value.id === id);
         if (index !== -1) {
           const newAdminStores = [
             ...adminStores.slice(0, index),
             ...adminStores.slice(index + 1),
           ];
           setConfirmDelete(false);
-          setAttemptedDelete("");
+          setAttemptedDelete(null);
           setAdminStores(newAdminStores);
         }
       }
@@ -49,7 +47,7 @@ const DeleteStore = ({ adminStores, setAdminStores }: any) => {
               className="text-red-600 hover:text-red-800 font-medium"
               onClick={() => {
                 setConfirmDelete(true);
-                setAttemptedDelete(store.store_location);
+                setAttemptedDelete(store.id);
               }}
             >
               DELETE
@@ -69,7 +67,7 @@ const DeleteStore = ({ adminStores, setAdminStores }: any) => {
               <button
                 onClick={() => {
                   setConfirmDelete(false);
-                  setAttemptedDelete("");
+                  setAttemptedDelete(null);
                 }}
                 className="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400"
               >
