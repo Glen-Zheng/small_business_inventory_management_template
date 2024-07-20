@@ -30,7 +30,15 @@ export default function Feed() {
     dispatch(setStoreLocation(""));
     async function fetchStores() {
       try {
-        const response = await fetch("/api/stores");
+        const response = await fetch("/api/stores", {
+          method: "GET",
+          headers: {
+            "Cache-Control":
+              "no-store, no-cache, must-revalidate, proxy-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        });
         const data = await response.json();
         setStores(data);
       } catch (error) {
