@@ -8,12 +8,15 @@ export const GET = async (req) => {
       [0]
     );
     console.log("API response data:", rows); // Add this line
-
     return new Response(JSON.stringify(rows), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "no-store, max-age=0",
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+        "Surrogate-Control": "no-store",
         ETag: `"${Date.now()}"`,
       },
     });
