@@ -9,7 +9,14 @@ export const GET = async (req) => {
     );
     console.log("API response data:", rows); // Add this line
 
-    return new Response(JSON.stringify(rows), { status: 200 });
+    return new Response(JSON.stringify(rows), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, max-age=0",
+        ETag: `"${Date.now()}"`,
+      },
+    });
   } catch (error) {
     return new Response("Failed to fetch all stores", { status: 500 });
   }
