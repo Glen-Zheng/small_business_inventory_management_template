@@ -10,7 +10,15 @@ const Stores = () => {
   useEffect(() => {
     async function fetchStores() {
       try {
-        const response = await fetch("/api/stores");
+        const response = await fetch("/api/stores", {
+          method: "POST",
+          headers: {
+            "Cache-Control":
+              "no-store, no-cache, must-revalidate, proxy-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setAdminStores(data);

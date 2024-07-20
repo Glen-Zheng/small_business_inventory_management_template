@@ -1,7 +1,7 @@
 // pages/api/stores.js
 import pool from "../../../../utils/database";
 
-export const GET = async (req) => {
+export const POST = async (req) => {
   try {
     const [rows] = await pool.execute(
       "SELECT id, store_location FROM stores WHERE is_deleted = ?",
