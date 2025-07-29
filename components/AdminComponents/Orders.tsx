@@ -252,7 +252,7 @@ const Orders = () => {
                             {order.order_status === "Pending" && (
                               <p
                                 onClick={() => orderComplete(order.order_id)}
-                                className="font-left underline hover:text-turqoise cursor-pointer"
+                                className="font-left underline hover:text-turqoise cursor-pointer text-blue-600"
                               >
                                 Mark as Completed (Irreversible)
                               </p>

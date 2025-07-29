@@ -7,7 +7,9 @@ export async function POST(req) {
     const { password } = await req.json();
 
     const query = "SELECT pass_key FROM admin_data WHERE usage_type = ?";
-    const [rows] = await pool.execute(query, ["admin password"]);
+    const [[{ pass_key: storedHash }]] = await pool.execute(query, [
+      "admin password",
+    ]);
     console.log(rows);
 
     if (rows.length === 0) {
@@ -16,8 +18,6 @@ export async function POST(req) {
         headers: { "Content-Type": "application/json" },
       });
     }
-
-    const storedHash = rows[0].pass_key;
 
     // Compare the provided password with the stored hash
     const isMatch = await bcrypt.compare(password, storedHash);

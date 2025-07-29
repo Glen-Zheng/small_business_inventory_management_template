@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
 import React from "react";
+import LoadingOverlay from "./LoadingOverlay";
 import { useRouter } from "next/navigation";
 
 const AdminLogin = ({ setOpenModal }: any) => {
   const [adminPass, setAdminPass] = useState<any>("");
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [seeAdminPass, setSeeAdminPass] = useState<string>("password");
   const [adminPassError, setAdminPassError] = useState<boolean>(false);
 
@@ -41,7 +42,9 @@ const AdminLogin = ({ setOpenModal }: any) => {
   };
 
   const handleSubmit = async (e: any) => {
+    if (isLoading) return;
     e.preventDefault();
+    setIsLoading(true);
     try {
       const res = await authenticateAdmin();
       //do we need to check if the previous oen had an error? later
@@ -52,6 +55,8 @@ const AdminLogin = ({ setOpenModal }: any) => {
       //if there's an error in here, it means that the api call was busted, and that's bad same as above
       alert("request failed");
       console.error("An error occurred:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -63,6 +68,7 @@ const AdminLogin = ({ setOpenModal }: any) => {
         }
       }}
     >
+      {isLoading && <LoadingOverlay />}
       <div className="bg-white px-8 py-6 rounded-lg shadow-xl w-full max-w-md">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Admin Login</h2>

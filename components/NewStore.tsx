@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import React from "react";
-
+import LoadingOverlay from "./LoadingOverlay";
 const NewStore = ({ setAdminStores }: any) => {
   const [storeLocation, setStoreLocation] = useState<string>("");
   const [storePassword, setStorePassword] = useState<any>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [seePass, setSeePass] = useState<string>("password");
   const [adminPassError, setAdminPassError] = useState<boolean>(false);
@@ -41,6 +42,8 @@ const NewStore = ({ setAdminStores }: any) => {
   // };
 
   const handleSubmit = async (e: any) => {
+    if (isLoading) return;
+    setIsLoading(true);
     e.preventDefault();
     try {
       //do we need to check if the previous oen had an error? later
@@ -68,16 +71,20 @@ const NewStore = ({ setAdminStores }: any) => {
         // setStoreRegistered((prev: any) => !prev);
 
         console.log("Registration successful");
+
         // Here you might redirect the user or show a success message
       }
     } catch (error) {
       //if there's an error in here, it means that the api call was busted, and that's bad same as above
       alert("request failed");
       console.error("An error occurred:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
+      {isLoading && <LoadingOverlay />}
       <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-600">
         <form
           className="z-20 space-y-6"
